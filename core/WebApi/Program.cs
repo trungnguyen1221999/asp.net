@@ -1,11 +1,8 @@
 using WebApi;
-
 var builder = WebApplication.CreateBuilder(args);
-var appName = builder.Configuration.GetValue<string>("OrderSystem:AppName") ?? "WebApi";
 
-var maxItem = builder.Configuration.GetValue<int>("OrderSystem:MaxOrderItemsPerOrder", 50);
-Console.WriteLine($"Khoi dong {appName}, gioi han {maxItem} san pham/don hang.");
-
+var pageSize = builder.Configuration.GetValue<int>("OrderSystem:DefaultPageSize", 10);
+Console.WriteLine($"Default page size: {pageSize}");
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -26,15 +23,17 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
-
 app.UseRequestLogging();
+
+app.UseAdminHeaderCheck();
+
+app.UseAuthorization();
 
 app.MapControllers();
 
 app.Run(async context =>
 {
-    await context.Response.WriteAsync("api is live");
+    await context.Response.WriteAsync("This is api ");
 });
 
 app.Run();
